@@ -50,7 +50,7 @@ COULD_FAIL="	environ
 
 
 RETVAL="0"
-
+echo "$RETVAL" >retval
 
 
 checkifempty()
@@ -88,7 +88,6 @@ printf "==========COMPILING TESTS ===================================\n"
 	CC="$1" make
 )
 
-
 printf "=============================================================\n"
 printf "==========TEST RESULT START==================================\n"
 
@@ -104,12 +103,10 @@ do	./tests-comparative-research/${i} > "${SUF}/diff2"	# don't quote ./tests/{i} 
 	fi
 done
 
-#if [ -f retval ]
-#then	. retval
-#	rm retval
-#fi
+# get the error code from after forked process
+. retval
 
-
+# libc-test-fork
 (
 	cd libc-test-fork
 	CC=$2 make
