@@ -1,5 +1,6 @@
 #!/bin/sh
 
+
 BASIC_TYPE="	stat-driver .
 		lstat-driver .
 		printf-zeropad
@@ -24,8 +25,8 @@ BASIC_TYPE="	stat-driver .
 		printf-driver-integers
 		strstr-driver
 		strstr-effectiveness2
-		realloc-filetreewalk include
-		popen-driver du include
+		realloc-filetreewalk ../include
+		popen-driver du ../include
 		puts-driver
 		strerror-driver
 		pow_test
@@ -46,19 +47,17 @@ BASIC_TYPE="	stat-driver .
 COULD_FAIL="	environ
 "
 
-
-
+HBOX_TYPE="	gsh ./hbox/gsh.sh
+"
 
 RETVAL="0"
-echo "$RETVAL" >retval
-
 
 checkifempty()
 {
 	if [ ! -s "$1" ]
 	then    printf "%s\n" "empty test file, something went wrong!!"
 		printf "%s\n" "Returning failure for the entire test suite!!"
-		RETVAL=1
+		echo "RETVAL=1" > retval
 	fi
 }
 
@@ -70,13 +69,14 @@ displaydiff()
 
 
 cd hlibc-test
-
-
 SUF="$(pwd)/logs/"
 mkdir -p "${SUF}"
 
 cp -r tests-comparative tests-comparative-research
 cp -r tests-comparative tests-comparative-control
+
+cp -r hbox hbox-research
+cp -r hbox hbox-control
 
 printf "==========COMPILING TESTS ===================================\n"
 (
@@ -87,9 +87,18 @@ printf "==========COMPILING TESTS ===================================\n"
 	cd tests-comparative-control
 	CC="$1" make
 )
-
+(
+	cd hbox-research
+	CC="$2" make
+)
+(
+	cd hbox-control
+	CC="$1" make
+)
 printf "=============================================================\n"
 printf "==========TEST RESULT START==================================\n"
+
+echo "RETVAL=$RETVAL" > retval
 
 printf "%s" "$BASIC_TYPE" | while read -r i
 do	./tests-comparative-research/${i} > "${SUF}/diff2"	# don't quote ./tests/{i} or ./control/{i} 
@@ -98,13 +107,23 @@ do	./tests-comparative-research/${i} > "${SUF}/diff2"	# don't quote ./tests/{i} 
 	if diff "${SUF}/diff2" "${SUF}/diff3" 2>&1 > "${SUF}/testerr"
 	then	printf "%s\n" "\`${i}' compared equal to its control method"
 	else	printf "%s\n" "##${i} failed to compare equal to its control method"
-		echo RETVAL="1" > retval
+		echo "RETVAL=1" > retval
 		displaydiff
 	fi
 done
 
-# get the error code from after forked process
-. retval
+printf "%s" "$HBOX_TYPE" | while read -r i
+do	./hbox-research/${i} > "${SUF}/diff2"
+	./hbox-control/${i} > "${SUF}/diff3"
+	checkifempty "${SUF}/diff2"
+	if diff "${SUF}/diff2" "${SUF}/diff3" 2>&1 > "${SUF}/testerr"
+	then	printf "%s\n" "\`${i}' compared equal to its control method"
+	else	printf "%s\n" "##${i} failed to compare equal to its control method"
+		echo "RETVAL=1" > retval
+		displaydiff
+	fi
+done
+
 
 # libc-test-fork
 (
@@ -113,6 +132,12 @@ done
 	./testsuite
 )
 
+# get the error code after forks
+. ./retval
+
+echo "returning $RETVAL .. "
 
 exit $RETVAL
+
+
 
