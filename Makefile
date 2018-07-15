@@ -5,6 +5,7 @@ clean:
 	-rm -rf hbox-research
 	-rm -rf hbox-control
 	-rm -rf logs
+	-rm -rf bc*
 	-make -C libc-test-fork clean
 	-rm retval
 	

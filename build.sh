@@ -1,5 +1,7 @@
 #!/bin/sh
 
+# Usage: ./build.sh control-compiler research-compiler
+
 
 BASIC_TYPE="	stat-driver .
 		lstat-driver .
@@ -128,8 +130,31 @@ done
 # libc-test-fork
 (
 	cd libc-test-fork
-	CC=$2 make
+	CC="$2" make
 	./testsuite
+)
+
+# GNU bc
+[ -d bc-1.03 ] || {
+        wget https://ftp.gnu.org/gnu/bc/bc-1.03.tar.gz
+        tar -xf bc-1.03.tar.gz
+}
+
+echo "Building GNU bc-1.03 .."
+(
+        [ -d bc-1.03 ] && cd bc-1.03 && {
+        sed 's/.*getopt.*//g' proto.h > bak # this is broken in bc-1.03
+        mv bak proto.h
+
+        CC="$2" ./configure >/dev/null 2>&1
+        CC="$2" make > /dev/null 2>&1
+
+        printf "\n"
+        printf "1234567*1234567\n" | ./bc -l
+        printf "should be 1524155677489 if bc-1.03 is working\n"
+        pwd
+        printf "\n\n"
+        }
 )
 
 # get the error code after forks
