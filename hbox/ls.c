@@ -11,7 +11,7 @@
 #include <grp.h>
 
 /* 
-	Copyright 2015-2018, CM. Graff "ls"
+	Copyright 2015-2018, C. Graff "ls"
 */ 
 
 /* structs */
@@ -51,34 +51,34 @@ int main(int argc, char *argv[])
 	while ((o = getopt (argc, argv, "lUinxhCaR")) != -1)
 		switch (o) { 
 			case 'l' : 
-				g.plain = 1;
+				g.plain = 1; 
 				break;
 			case 'U' : 
-				g.alpha = 0;
+				g.alpha = 0; 
 				break;
 			case 'i' : 
-				g.inode = 1;
+				g.inode = 1; 
 				break;
 			case 'n' : 
-				g.numer = 1;
+				g.numer = 1; 
 				break;
 			case 'x' : 
-				g.horiz = 1;
+				g.horiz = 1; 
 				break;
 			case 'C' : 
-				g.plain = 0;
+				g.plain = 0; 
 				break;
 			case 'a' : 
-				g.hiddn = 1;
+				g.hiddn = 1; 
 				break;
 			case 'R':
 				g.recur = 1;
 				break;
 			case 'h' : 
-				ls_error("Usage:   ls -lUinxhCaR [PATH(S)]\n", 0);
+				ls_error("Usage:   ls -lUinxhCaR [PATH(S)]\n", 0); 
 				break;
 			case '?' : 
-				return 0;
+				return 0; 
 			default: 
 				break;
 		}
@@ -120,13 +120,13 @@ void list_dirs(char *argvv, lstype g)
 { 
 	struct winsize w;
 	DIR *a;
-	struct dirent *b;
+	struct dirent *b; 
 	size_t max = 1;
-	size_t len = 1;
+	size_t len = 1; 
 	size_t factor = 0;
 	size_t refactor = 0;
 	size_t c = 0;
-	static size_t outs = 4096;
+	static size_t outs = 10024;
 
 	if (g.output == NULL)
 	{
@@ -182,18 +182,18 @@ void list_dirs(char *argvv, lstype g)
 		qsort(g.strings, c, sizeof (char*), compare);
 
 	if (g.plain == 1) 
-		print_plain(c, g);
+		print_plain(c, g); 
 	
 	if (g.plain == 0)
 	{
 		if (g.horiz == 1)
 		{
 			print_strings(g.strings, c - refactor -1, refactor, max);
-			printf("\n");
+			printf("\n"); 
 		}
 		else {
-			shift_alpha(c, refactor, g);
-			print_strings(g.output, c, refactor, max);
+			shift_alpha(c, refactor, g); 
+			print_strings(g.output, c, refactor, max); 
 		} 
 	} 
 	end:
@@ -259,74 +259,74 @@ void octtoperm(int octal)
 	switch (octal & S_IFMT)
 	{
 		case S_IFBLK:
-			putchar('b');
+			printf("b");
 			break;
 		case S_IFCHR:
-			putchar('c');
+			printf("c");
 			break;
 		case S_IFDIR:
-			putchar('d');
+			printf("d");
 			break;
 		case S_IFIFO:
-			putchar('p');
+			printf("p");
 			break;
 		case S_IFLNK:
-			putchar('l');
+			printf("l");
 			break;
 		case S_IFREG:
-			putchar('-');
+			printf("-");
 			break;
 		case S_IFSOCK:
-			putchar('S');
+			printf("S");
 			break;
 		default:
-			putchar('?');
+			printf("?");
 			break;
 
 	}
 
 	if (octal & S_IRUSR)
-		putchar('r');
+		printf("r");
 	else
-		putchar('-');
+		printf("-");
 	if (octal & S_IWUSR)
-		putchar('w');
+		printf("w");
 	else
-		putchar('-');
+		printf("-");
 	if (octal & S_IXUSR)
-		putchar('x');
+		printf("x");
 	else
-		putchar('-');
+		printf("-");
 	if (octal & S_IRGRP)
-		putchar('r');
+		printf("r");
 	else
-		putchar('-');
+		printf("-");
 	if (octal & S_IWGRP)
-		putchar('w');
+		printf("w");
 	else
-		putchar('-');
+		printf("-");
 	if (octal & S_IXGRP)
-		putchar('x');
+		printf("x");
 	else
-		putchar('-');
+		printf("-");
 	if (octal & S_IROTH)
-		putchar('r');
+		printf("r");
 	else
-		putchar('-');
+		printf("-");
 	if (octal & S_IWOTH)
-		putchar('w');
+		printf("w");
 	else
-		putchar('-');
+		printf("-");
 
 	if (octal & S_ISVTX && octal & S_IXOTH)
-		putchar('t');
+		printf("t");
 	else if (octal & S_ISVTX)
-		putchar('T');
+		printf("T");
 	else if (octal & S_IXOTH)
-		putchar('x');
+		printf("x");
 	else
-		putchar('-');
-	putchar(' ');
+		printf("-");
+	printf(" ");
 }
 
 int compare(const void *a, const void *b)
@@ -342,11 +342,11 @@ void prntstats(char *file, lstype g)
 	octtoperm(sb.st_mode);
 	printf(" ");
 	if (g.inode == 1)
-		printf("%-8zu ", sb.st_ino);
+		printf("%-8ld ", sb.st_ino);
 	printf("%-3ld ", sb.st_nlink);
 	printf("%ld %ld ", (long int)sb.st_uid, (long int)sb.st_gid);
 	printf("%8lld ", (long long int)sb.st_size);
-	printf("%s\n", file);
+	printf("%s\n", file); 
 } 
 
 int find_pattern(char *path, size_t tot, size_t last, lstype g)
@@ -354,7 +354,7 @@ int find_pattern(char *path, size_t tot, size_t last, lstype g)
 	DIR *dir;
 	struct dirent *d;
 	char *spath = malloc(1);
-	size_t dlen = 0;
+	size_t dlen = 0; 
 	
 	printf("%s:\n", path);
 	list_dirs(path, g);
@@ -370,19 +370,19 @@ int find_pattern(char *path, size_t tot, size_t last, lstype g)
 		while (d) 
 		{
 			dlen = strlen(d->d_name);
-			last = (tot + dlen + 2);
+			last = (tot + dlen + 2); 
 			spath = realloc(spath, last);
 			if (!(spath))
 				return -1;
 
-			tot = sprintf(spath, "%s/%s", path, d->d_name);
+			tot = sprintf(spath, "%s/%s", path, d->d_name); 
 
 			if (d->d_type == DT_DIR &&
 			   (strcmp( ".", d->d_name)) &&
 			   (strcmp( "..", d->d_name))) {
 				find_pattern(spath, tot, last, g);
 			} 
-			d = readdir(dir);
+			d = readdir(dir); 
 		} 
 	}
 
