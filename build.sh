@@ -97,6 +97,10 @@ printf "==========COMPILING TESTS ===================================\n"
 	cd hbox-control
 	CC="$1" make
 )
+(
+	cd tests-emperical
+	CC="$2" make
+)
 printf "=============================================================\n"
 printf "==========TEST RESULT START==================================\n"
 
@@ -126,6 +130,11 @@ do	./hbox-research/${i} > "${SUF}/diff2"
 	fi
 done
 
+# some emperical tests
+(
+	./tests-emperical/stdio_strtol_cross_proof
+	./tests-emperical/atexit
+)
 
 # libc-test-fork
 (

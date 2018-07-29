@@ -7,5 +7,6 @@ clean:
 	-rm -rf logs
 	-rm -rf bc*
 	-make -C libc-test-fork clean
+	-make -C tests-emperical clean
 	-rm retval
 	
