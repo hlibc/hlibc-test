@@ -180,7 +180,6 @@ int exitsh(char *string)
 	return 1;
 }
 
-
 int execute()
 { 
 	int fildes[2];
@@ -257,7 +256,6 @@ int execute()
 				return exitsh(cmds[k].argv[1]);
 			} 
 		}
-	
 
 		/* Normal commands */ 
 		/*-----------------*/
@@ -277,16 +275,15 @@ int execute()
 				dup2(cmds[k].in, STDIN_FILENO);
 			if ( cmds[k].out != -1  ) 
 				dup2(cmds[k].out, STDOUT_FILENO);
-			/* check that this is not a NULL pointer, yes lame */
-			if ( cmds[k].argv[0] )
+			
+			if ( cmds[k].argv[0])
 			{
 				execvp(cmds[k].argv[0], cmds[k].argv);
 				fprintf(stderr, "gsh: %s not found\n", cmds[k].argv[0]);
 	       			fflush(stderr);
 			} 
 			_exit(1);
-		} 
-		
+		}
 		
 		if ( cmds[k].bg != 1 )
 		{ 
@@ -333,7 +330,7 @@ static void initialize(size_t i)
 {
 	if (!(cmds = realloc(cmds, sizeof(struct commands) * (i + 1))))
 	{
-		//perror(" realloc()" );
+		perror(" realloc()" );
 		exit(1);
 	}
 
@@ -357,14 +354,32 @@ static void initialize(size_t i)
 	cmds[i].fia = -1;
 }
 
+typedef struct grammar {
+        int atoken;
+        int awhite;
+        int aredir;
+} grammar;
+
+grammar gfunc(grammar g, int a, int b, int c)
+{
+	g.atoken = a;
+	g.awhite = b;
+	g.aredir = c;
+	return g;
+}
+
+char *strip_space(char *l)
+{
+	while (*(l + 1) == ' ') /* strip whitespace */
+        	*l++ = '\0';
+	return l;
+}
+
 int parse(char *l)
 {
-
 	/* grammar */
-	int atoken = 0;
-	int awhite = 1;
-	int aredir = 0;
-	int aquote = 0;
+	grammar g = { 0 };
+	
 	/* total commands */
 	size_t c = 0;
 	
@@ -378,52 +393,33 @@ int parse(char *l)
 	/* discover tokens and commands */
 	while ( *l )
 	{
-		if (*l == '"')
-		{ 
-			*l = '\0';
-			last = ( l + 1);
-			/* routing switch for quotes */
-			if ( aquote == 0 ) 
-				aquote = 1;
-			else
-				aquote = 0;
-		}
 		if (*l == ';')
 		{
 			*l = '\0';
 			initialize(++c);
-			last = ( l + 1 );
-			atoken = 1;
-			awhite = 0;
-			aredir = 0;
+			last = (l + 1);
+			g = gfunc(g, 1, 0, 0); 
 		}
 		else if (*l == '\n' && *(l + 1) != '\n')
 		{ 
 			*l = '\0';
 		       	initialize(++c);
-			last = ( l + 1);
-			atoken = 1;
-			awhite = 0;
-			aredir = 0;
+			last = (l + 1);
+			g = gfunc(g, 1, 0, 0); 
 		}
 		else if (*l == '\n')
 		{
 			*l = '\0';
-			atoken = 1;
-			awhite = 0;
-			aredir = 0;
+			g = gfunc(g, 1, 0, 0); 
 		}
 		else if ( *l == '|' && *(l + 1) == '|' )
 		{
 			cmds[c].boole = 1;
-			*l = '\0';
-			++l;
+			*l++ = '\0';
 			*l = '\0';
 			initialize(++c);
-			last = ( l + 1 );
-			atoken = 1;
-			awhite = 0;
-			aredir = 0;
+			last = (l + 1);
+			g = gfunc(g, 1, 0, 0); 
 		}
 		else if (*l == '|')
 		{
@@ -431,88 +427,64 @@ int parse(char *l)
 			*l = '\0';
 			initialize(++c);
 			last = (l + 1);
-			atoken = 1;
-			awhite = 0;
-			aredir = 0;
+			g = gfunc(g, 1, 0, 0); 
 		}
 		else if (*l == '&' && *(l + 1)  == '&')
 		{
 			cmds[c].boole = 0;
-			*l = '\0';
-			++l;
+			*l++ = '\0';
 			*l = '\0';
 			initialize(++c);
 			last = (l + 1);
-			atoken = 1;
-			awhite = 0;
-			aredir = 0;
+			g = gfunc(g, 1, 0, 0); 
 		}
 		else if (*l == '&')
 		{
 			cmds[c].bg = 1;
 			*l = '\0';
 			initialize(++c);
-			last = ( l + 1 );
-			atoken = 1;
-			awhite = 0;
-			aredir = 0;
+			last = (l + 1);
+			g = gfunc(g, 1, 0, 0); 
 		}
 		else if (*l == '>' && *(l + 1) == '>')
 		{
-			*l = '\0';
-			++l;
+			*l++ = '\0';
 			*l = '\0';
 			cmds[c].outflags = O_APPEND|O_RDWR|O_CREAT;
-			while ( *( l + 1 ) == ' ') /* strip whitespace */
-				*l++ = '\0';
-			cmds[c].outfp = ( l + 1 );
-			atoken = 1;
-			awhite = 0;
-			aredir = 1;
+			l = strip_space(l);
+			cmds[c].outfp = (l + 1);
+			g = gfunc(g, 1, 0, 1); 
 		}
 		else if (*l == '>')
 		{
 			*l = '\0';
 			cmds[c].outflags = O_TRUNC|O_RDWR|O_CREAT;
-			while ( *( l + 1 ) == ' ') /* strip whitespace */
-				*l++ = '\0';
-			cmds[c].outfp = ( l + 1 );
-			atoken = 1;
-			awhite = 0;
-			aredir = 1;
+			l = strip_space(l);
+			cmds[c].outfp = (l + 1);
+			g = gfunc(g, 1, 0, 1); 
 		}
 		else if (*l == '<')
 		{
 			*l = '\0';
-			while ( *( l + 1 ) == ' ') /* strip whitespace */
-				*l++ = '\0';
-			cmds[c].infp = ( l + 1 );
-			atoken = 1;
-			awhite = 0;
-			aredir = 1;
+			l = strip_space(l);
+			cmds[c].infp = (l + 1);
+			g = gfunc(g, 1, 0, 1); 
 		}
-		else if ( *l != ' ' && *l != '\t' )
+		else if (*l != ' ' && *l != '\t' )
 		{
-			if (aredir == 0 )
+			if (g.aredir == 0 )
 			{
 				cmds[c].argv[cmds[c].argc] = last;
 				cmds[c].argv[cmds[c].argc + 1] = NULL;/* speed up + hack */
-			}
-			awhite = 0;
-			atoken = 0;
+			} 
 		}
-		else if ( *l == ' ' || *l == '\t' )
+		else if (*l == ' ' || *l == '\t' )
 		{ 
-			if ( atoken == 0 && awhite == 0 && aredir == 0 && aquote == 0)
+			if (g.atoken == 0 && g.awhite == 0 && g.aredir == 0)
 				cmds[c].argc++;
-			
-			if (aquote == 0)
-			{
-				awhite = 1;
-				*l = '\0';
-				last = ( l + 1 );
-			}
-			//last = ( l + 1 );
+			g.awhite = 1;
+			*l = '\0';
+			last = (l + 1);
 		}
 		++l;
 	}
@@ -520,10 +492,10 @@ int parse(char *l)
 
 	/* An exception could be added here to check for NULL ultimate args */
 	
-	if ( glb.cmode )
+	if (glb.cmode)
 		++glb.count;
 
-	if ( glb.testparse )
+	if (glb.testparse)
 		verbosity();
 	
 	return 0;
