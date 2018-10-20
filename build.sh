@@ -57,7 +57,7 @@ RETVAL="0"
 checkifempty()
 {
 	if [ ! -s "$1" ]
-	then    printf "%s\n" "empty test file, something went wrong!!"
+	then	printf "%s\n" "empty test file, something went wrong!!"
 		printf "%s\n" "Returning failure for the entire test suite!!"
 		echo "RETVAL=1" > retval
 	fi
@@ -118,6 +118,17 @@ do	./tests-comparative-research/${i} > "${SUF}/diff2"	# don't quote ./tests/{i} 
 	fi
 done
 
+./tests-comparative-research/popen-to-file ls "${SUF}/diff2"
+./tests-comparative-control/popen-to-file ls "${SUF}/diff2"
+checkifempty "${SUF}/diff2"
+i="popen-to-file"
+if diff "${SUF}/diff2" "${SUF}/diff3" 2>&1 > "${SUF}/testerr"
+then	printf "%s\n" "\`${i}' compared equal to its control method"
+else	printf "%s\n" "##${i} failed to compare equal to its control method"
+	echo "RETVAL=1" > retval
+	displaydiff
+fi
+
 printf "%s" "$HBOX_TYPE" | while read -r i
 do	./hbox-research/${i} > "${SUF}/diff2"
 	./hbox-control/${i} > "${SUF}/diff3"
@@ -145,25 +156,25 @@ done
 
 # GNU bc
 [ -d bc-1.03 ] || {
-        wget https://ftp.gnu.org/gnu/bc/bc-1.03.tar.gz
-        tar -xf bc-1.03.tar.gz
+	wget https://ftp.gnu.org/gnu/bc/bc-1.03.tar.gz
+	tar -xf bc-1.03.tar.gz
 }
 
 echo "Building GNU bc-1.03 .."
 (
-        [ -d bc-1.03 ] && cd bc-1.03 && {
-        sed 's/.*getopt.*//g' proto.h > bak # this is broken in bc-1.03
-        mv bak proto.h
+	[ -d bc-1.03 ] && cd bc-1.03 && {
+	sed 's/.*getopt.*//g' proto.h > bak # this is broken in bc-1.03
+	mv bak proto.h
 
-        CC="$2" ./configure >/dev/null 2>&1
-        CC="$2" make > /dev/null 2>&1
+	CC="$2" ./configure >/dev/null 2>&1
+	CC="$2" make > /dev/null 2>&1
 
-        printf "\n"
-        printf "1234567*1234567\n" | ./bc -l
-        printf "should be 1524155677489 if bc-1.03 is working\n"
-        pwd
-        printf "\n\n"
-        }
+	printf "\n"
+	printf "1234567*1234567\n" | ./bc -l
+	printf "should be 1524155677489 if bc-1.03 is working\n"
+	pwd
+	printf "\n\n"
+	}
 )
 
 # get the error code after forks
