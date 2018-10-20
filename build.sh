@@ -118,8 +118,8 @@ do	./tests-comparative-research/${i} > "${SUF}/diff2"	# don't quote ./tests/{i} 
 	fi
 done
 
-./tests-comparative-research/popen-to-file ls "${SUF}/diff2"
-./tests-comparative-control/popen-to-file ls "${SUF}/diff2"
+./tests-comparative-research/popen-to-file 'ls' "${SUF}/diff2"
+./tests-comparative-control/popen-to-file 'ls' "${SUF}/diff3"
 checkifempty "${SUF}/diff2"
 i="popen-to-file"
 if diff "${SUF}/diff2" "${SUF}/diff3" 2>&1 > "${SUF}/testerr"
