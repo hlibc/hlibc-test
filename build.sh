@@ -176,6 +176,14 @@ echo "Building GNU bc-1.03 .."
 	printf "\n\n"
 	}
 )
+echo "building the arbitrary precision library arbprec"
+(
+	git clone https://github.com/hlibc/arbprec
+	CC="$2" ./configure >/dev/null 2>&1
+	CC="$2" make clean
+	CC="$2" make
+	CC="$2" make test
+)
 
 # get the error code after forks
 . ./retval
