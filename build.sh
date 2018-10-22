@@ -179,6 +179,7 @@ echo "Building GNU bc-1.03 .."
 echo "building the arbitrary precision library arbprec"
 (
 	git clone https://github.com/hlibc/arbprec
+	cd arbprec
 	CC="$2" ./configure >/dev/null 2>&1
 	CC="$2" make clean
 	CC="$2" make
