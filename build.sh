@@ -45,6 +45,7 @@ BASIC_TYPE="	stat-driver .
 		fwrite
 		strchr-driver
 		stderr
+		one_unit_mallocs
 "
 
 COULD_FAIL="	environ
