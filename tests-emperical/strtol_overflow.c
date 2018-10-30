@@ -10,11 +10,15 @@ int main(void)
 	char s[1000] = { 0 };
 	sprintf(s, "%ld1", i);
 	
-	printf("%s", s);
+	
 	act = strtol(s, NULL, 10);
 	if (errno == ERANGE)
-		fprintf(stderr, "ERANGE was set\n");
+		fprintf(stderr, "strtol correctly set ERANGE for %s\n", s);
 	else
-		fprintf(stderr, "ERANGE was not set\n");
+		fprintf(stderr, "strtol did not set ERANGE for %s\n", s);
+	if (act == LONG_MAX)
+		fprintf(stderr, "strtol correctly set %s to LONG_MAX\n", s);
+	else
+		fprintf(stderr, "strtol did not set %s to LONG_MAX\n", s);
 	return 0;
 }
