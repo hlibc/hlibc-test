@@ -6,7 +6,9 @@
 int main(void)
 {
 	size_t i = INT_MAX;
-	i++;
+	++i;
+	//i += 4;
+	++i;
 	char *s = malloc(i);
 	if (!(s))
 	{
@@ -15,10 +17,12 @@ int main(void)
 	}
 	memset(s, 'A', i -1);
 	s[i] = 0;
-	printf("%s", s, 1);
+	size_t len = printf("%s", s, 1);
+	
 	if (errno == EOVERFLOW)
-		printf("printf overflow was caught\n");
+		fprintf(stderr, "printf overflow was caught\n");
 	else
-		printf("printf overflow was not caught\n");
+		fprintf(stderr, "printf overflow was not caught\n");
+	fprintf(stderr, "printf returned %zu\n", len);
 	return 0;
 }
