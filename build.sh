@@ -147,6 +147,7 @@ done
 (
 	./tests-emperical/stdio_strtol_cross_proof
 	./tests-emperical/atexit
+	./tests-emperical/strtol_overflow
 )
 
 # libc-test-fork
