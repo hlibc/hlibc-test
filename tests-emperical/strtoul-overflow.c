@@ -19,7 +19,7 @@ int main(void)
 	else
 		fprintf(stderr, "strtoul did not set %s to ULONG_MAX\n", s);
 
-	
+	errno = 0;
 	unsigned long long i2 = ULLONG_MAX;
 	unsigned long long act2 = 0;
 	char s2[1000] = { 0 };
@@ -33,6 +33,6 @@ int main(void)
 		fprintf(stderr, "strtoll correctly set %s to ULLONG_MAX\n", s2);
 	else
 		fprintf(stderr, "strtoll did not set %s to ULLONG_MAX\n", s2);
-	
+	errno = 0;
 	return 0;
 }
