@@ -149,6 +149,9 @@ done
 	./tests-emperical/atexit
 	./tests-emperical/strtol_overflow
 	./tests-emperical/strtoul_overflow
+	# the following tests require a system with a huge amount of memory
+	#./tests-emperical/printf_overflow
+	#./tests-emperical/sprintf_overflow
 )
 
 # libc-test-fork

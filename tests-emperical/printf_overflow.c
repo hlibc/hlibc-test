@@ -7,8 +7,6 @@ int main(void)
 {
 	size_t i = INT_MAX;
 	++i;
-	//i += 4;
-	++i;
 	char *s = malloc(i);
 	if (!(s))
 	{
