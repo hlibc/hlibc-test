@@ -6,8 +6,10 @@ int main(void)
 {
 	char string[1024];
 	sprintf(string, "%lld", LLONG_MAX);
-	printf("LLONG_MAX = %s\n", string);
+	long long d = atoll(string);
+	printf("LLONG_MAX = %lld\n", d);
 	sprintf(string, "%lld", LLONG_MIN);
-	printf("LLONG_MIN = %s\n", string);
+	d = atoll(string);
+	printf("LLONG_MIN = %lld\n", d);
 	return 0;
 }
