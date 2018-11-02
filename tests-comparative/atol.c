@@ -6,7 +6,7 @@ int main(void)
 {
 	char string[1024];
 	sprintf(string, "%ld", LONG_MAX);
-	long long d = atol(string);
+	long d = atol(string);
 	printf("LONG_MAX = %ld\n", d);
 	sprintf(string, "%ld", LONG_MIN);
 	d = atol(string);
