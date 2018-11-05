@@ -47,6 +47,7 @@ BASIC_TYPE="	stat-driver .
 		stderr
 		one_unit_mallocs
 		fscanf_string
+		fscanf_string_1s
 "
 
 COULD_FAIL="	environ
