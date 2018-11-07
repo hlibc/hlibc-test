@@ -1,0 +1,85 @@
+hlibc-test
+
+
+	hlibc-test is the test suite for the hlibc standard C library. It is
+	an amalgamation of every test we could get our hands on.
+
+	You're probably lookig for the actual hlibc standard library which is
+	here:
+
+		https:/github.com/hlibc/hlibc
+
+	There are two primary sections of hlibc-test:
+
+	tests-comparative/
+
+		These tests compare two libc against each other and perform
+		diffs to see that they have identical output. For this reason
+		they are not ideal, nonetheless they have helped guide hlibc
+		development in ways that have been indispensable.
+
+		For these tests to work, two compilers which are linked against
+		different libc must be used. Ergo, ./build.sh is looking for
+		two arguments each one being a different compiler.
+
+	tests-emperical/
+
+		These are tests that compare a libc's output against either
+		itself or some known constants contained within it. There are
+		not as many tests here as there should be, but the idea of
+		emperical tests is much better than the aforementioned
+		comparative tests. The reason for this is that comparative tests
+		have the inherent problem of reproducing bugs between two
+		imeplementations. These tests only requires the compiler that
+		you are seeking to test, however build.sh is not designed to
+		operate without two arguments. 
+
+	hbox/
+
+		Various simplistic POSIX userland utilities that can be used
+		to test a libc.
+
+Usage
+-----
+
+
+	To use hlibc-test, supply it with two compilers which are linked against
+	a research and control libc respectively.
+
+		./build.sh compiler1 compiler2
+
+
+	To further clarify you would use the hlibc compiler wraper as follows:
+
+
+		./build.sh /path/to/hlibc/compiler gcc
+
+	Or for clang:
+
+		./build.sh /path/to/hlibc/compiler clang
+
+
+	This sort of method can be used to compare anr combination of compilers
+	ad the libc they are linked to. And of course if you simply want the
+	emperical tests and only have a single compiler that section can be
+	passed by simply comparing the compiler against itself:
+
+		./build.sh gcc gcc
+
+	These commands are invoked automatically when `make test' is ran from
+	the bottom level makefile of hlibc itself.
+
+
+	You may be interested in poking around and seeing various stray files
+	that perform their own duties but are not incorporated into build.sh.
+	Or perhaps even using the `hbox' utility suite to create a small yet
+	unique operating system. But bear in mind that these are all tests,
+	they are not meant to be production grade code.
+
+	enjoy!
+
+	-- Graff
+
+	
+
+
