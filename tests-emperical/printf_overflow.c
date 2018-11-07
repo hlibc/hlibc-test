@@ -11,16 +11,17 @@ int main(void)
 	if (!(s))
 	{
 		fprintf(stderr, "unable to allocate enough memory\n");
-		return 0;
+		return 1;
 	}
-	memset(s, 'A', i -1);
+	memset(s, 'A', i - 1);
 	s[i] = 0;
-	size_t len = printf("%s", s, 1);
+	long long len = printf("%s", s, 1);
 	
 	if (errno == EOVERFLOW)
-		fprintf(stderr, "printf overflow was caught\n");
+		fprintf(stderr, "printf set EOVERFLOW\n");
 	else
-		fprintf(stderr, "printf overflow was not caught\n");
-	fprintf(stderr, "printf returned %zu\n", len);
+		fprintf(stderr, "printf did not set EOVERFLOW\n");
+
+	fprintf(stderr, "printf returned %lld\n", len);
 	return 0;
 }
