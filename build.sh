@@ -47,6 +47,7 @@ BASIC_TYPE="	stat-driver .
 		stderr
 		one_unit_mallocs
 		fscanf_string
+		fscanf_string_and_int
 		fscanf_string_1s
 		fscanf_string_2s
 "
