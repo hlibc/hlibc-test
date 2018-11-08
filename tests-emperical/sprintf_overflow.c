@@ -3,13 +3,14 @@
 #include <errno.h>
 #include <string.h>
 #include <stdlib.h>
-int main(void)
+int main(int argc, char *argv[10])
 {
 	size_t i = INT_MAX;
-	i++;
+	if (argc > 1)
+		i += strtol(argv[1], NULL, 10);
 	char *s = malloc(i);
 	char *t = malloc(i);	
-	if (!(s))
+	if (!(s) || !(t))
 	{
 		fprintf(stderr, "unable to allocate enough memory\n");
 		return 0;
@@ -22,11 +23,11 @@ int main(void)
 	else
 		fprintf(stderr, "printf overflow was not caught\n");
 	size_t len = strlen(t);
-	printf("%zu\n", len);
+	printf("%zu is len of string\n", len);
 	if (len >= INT_MAX)
-		fprintf(stderr, "pow\n");
+		fprintf(stderr, "len >= INT_MAX)\n");
 	if (len >= INT_MAX -1)
-		fprintf(stderr, "pow truncated\n");
-	fprintf(stdout, "%zu <-- actual INT_MAX\n", INT_MAX);
+		fprintf(stderr, "len >= INT_MAX -1\n");
+	fprintf(stdout, "%d <-- actual INT_MAX\n", INT_MAX);
 	return 0;
 }
