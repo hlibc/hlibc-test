@@ -16,7 +16,7 @@ int main(int argc, char *argv[10])
 		return 0;
 	}
 	memset(s, 'A', i -1);
-	s[i] = 0;
+	s[i - 1] = 0;
 	snprintf(t, i, "%s", s, 1);
 	if (errno == EOVERFLOW)
 		fprintf(stderr, "printf overflow was caught\n");

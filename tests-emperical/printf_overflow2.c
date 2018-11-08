@@ -14,7 +14,7 @@ int main(void)
 		return 0;
 	}
 	memset(s, 'A', i -1);
-	s[i] = 0;
+	s[i - 1] = 0;
 	size_t len = 0;
 	len = printf("%s", s, 1);
 	if (errno == EOVERFLOW)
