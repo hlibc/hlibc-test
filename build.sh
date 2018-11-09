@@ -50,6 +50,7 @@ BASIC_TYPE="	stat-driver .
 		fscanf_string_and_int
 		fscanf_string_1s
 		fscanf_string_2s
+		snprintf_study
 "
 
 COULD_FAIL="	environ
