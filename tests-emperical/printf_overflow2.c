@@ -6,16 +6,15 @@
 int main(void)
 {
 	size_t i = INT_MAX;
-	//i++;
+	i += 2;
 	char *s = malloc(i);
-	if (!(s))
-	{
+	if (!(s)) {
 		fprintf(stderr, "unable to allocate enough memory\n");
 		return 0;
 	}
-	memset(s, 'A', i -1);
+	memset(s, 'A', i - 1);
 	s[i - 1] = 0;
-	size_t len = 0;
+	int len = 0;
 	len = printf("%s", s, 1);
 	if (errno == EOVERFLOW)
 		fprintf(stderr, "printf overflow was caught\n");
