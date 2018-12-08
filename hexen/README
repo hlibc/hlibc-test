@@ -1,0 +1,78 @@
+iocanon curses (iocanon)
+
+Description:
+------------
+
+	Hexen curses is a minimal implementation of the curses standard 
+	library. Hexen implements a subset of the X / curses standard.
+
+	Hexen is completely original code written by CM Graff from scratch.
+	It borrows from the model that K&R2 uses for its minimal stdio
+	implementation.
+
+
+
+
+
+
+
+BUILDING:
+--------
+
+	To build iocanon, simply invoke `make':
+
+		git clone https://github.com/cmgraff/iocanon
+		cd iocanon
+		make
+
+	The tests inside of the tests/ directory will automatically be built
+	and linked against iocanon's libcurses.a/libcurses.so. So, to test
+	iocanon simply invoke:
+
+		cp Makefile testfile
+		./tests/editor testfile
+
+
+TESTING:
+-------
+
+	The primary test for iocanon at this time is tests/editor. 
+
+	The local copy which is compiled against iocanon automaticallyand  can be
+	invoked as:
+
+		cp Makefile testfile
+		./tests/editor
+
+	The editor is a dead simple mechanism. `ctrl-x' saves changes and
+	`ctrl-n' quits. You'll probably need to invoke `reset' and reset
+	the terminal you are using after testing. This is of course due to
+	bugs either in iocanon or the editor, which is the point of having the
+	control test.
+
+	
+	As a control method tests/editor can be compiled against ncruses or 
+	similiar:
+
+		gcc tests/editor.c -o tests/editor-control -lcurses
+
+		./tests/editor-control testfile
+
+
+Features , limitations:
+-----------------------
+
+	No wide character support.
+
+	No color or terminal attribute support.
+
+	Sub windows are not yet fully supported and everything is written to 
+	"stdscr".
+
+	Compact and easy to statically compile.
+	
+	The WINDOW objects are not opaque but should be treated and used as 
+	opaque objects so as to ensure that the resulting code is portable.
+	
+
+

@@ -1,0 +1,50 @@
+
+A readline library
+
+
+A dead simple readline implementation which shares the same basic API as GNU
+readline and BSD editline so that it can be used as a drop in replacement for
+simple shells that might be interested in using a more sophisticated line
+editing library at a later date -- without changing their code or the way they
+access the API of the line editing library.
+
+This readline implementation is again dead simple. It uses a simple array
+matching technique and discards bad matches. It therefore doesn't handle longest
+possible sussible substring matching. It does however handle shortest substring
+matching and despite its simplicity will greatly speed up the usage of a shell
+whcih is otherwise lacking a lined editing library.
+
+The implementation is intended for an ASCII environment and is not intended to
+handle UTF-8, unicode or the likes. It is again, for the purpose of providing an
+extremely easy to compile and API identical drop in for line editing libraries
+that do such.
+
+Because this readline implementation depends on an "ansi" terminal as per defined
+in the classic termcap/terminfo databases it will not work on the legacy com
+terminal. If you suspect that your unix terminal is using something other than
+"ansi" or "xterm" modes you will want to do something like:
+
+	export TERM="ansi"
+
+Before using a program built against this readline library.
+
+
+Supported key strokes:
+	Up arrow	History
+	Down arrow	History
+	Home key	Move to the start of the line
+	End key		Move the end of the line
+
+
+
+Building:
+
+	./configure --prefix=/home/$USER/buildarea/
+	make
+	make install
+
+
+Only static libraries are produced, but you will need the headers under include/readline/
+in order to build against the library. These headers just supply the prototypes for the
+classic readline/editline API.
+
