@@ -3,7 +3,8 @@
 # Usage: ./build.sh control-compiler research-compiler
 
 
-BASIC_TYPE="	stat-driver .
+BASIC_TYPE="	asctime
+		stat-driver .
 		lstat-driver .
 		printf-zeropad
 		printf-fieldpad
@@ -188,6 +189,19 @@ echo "Building GNU bc-1.03 .."
 	printf "\n\n"
 	}
 )
+
+[ -d ed-1.4 ] || {
+	wget https://ftp.gnu.org/gnu/ed/ed-1.4.tar.gz
+	tar -xf ed-1.4.tar.gz
+}
+echo "Building GNU ed-1.4 .. "
+(
+	[ -d ed-1.4 ] && cd ed-1.4 && {
+        CC="$2" ./configure >/dev/null 2>&1
+        CC="$2" make > /dev/null 2>&1
+	}
+)
+
 echo "building the arbitrary precision library arbitraire"
 (
 	git clone https://github.com/hlibc/arbitraire
