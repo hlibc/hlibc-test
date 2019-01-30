@@ -6,6 +6,6 @@ int main(void)
 	struct tm t = { 0 };
 	char *buf;
 	buf = asctime(&t);
-	//printf("%s\n", buf);
+	printf("%s\n", buf);
 	return 0;
 }
