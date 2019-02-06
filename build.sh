@@ -3,7 +3,8 @@
 # Usage: ./build.sh control-compiler research-compiler
 
 
-BASIC_TYPE="	asctime
+BASIC_TYPE="	getcwd
+		asctime
 		stat-driver .
 		lstat-driver .
 		printf-zeropad
